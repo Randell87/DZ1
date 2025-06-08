@@ -2,10 +2,23 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
+import java.util.Random;
+
 public class ProductBasket {
     private static final int maxProducts = 5;
     private final Product[] products = new Product[maxProducts];
     private int count = 0; // счетчик продуктов в корзине
+
+    private final Random random = new Random();
+    private final String[] NAMES = {"Картофель", "Лук","Пиво","Свекла","Рыба"};
+
+    public Product initProduct() {
+            String name = NAMES[random.nextInt(NAMES.length)];
+        return new Product(name, random.nextInt(10, 100));
+    }
+
+
+
 
     //Добавление продукта в корзину
     public void addProduct(Product product){

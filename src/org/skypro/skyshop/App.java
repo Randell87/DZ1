@@ -7,20 +7,14 @@ import org.skypro.skyshop.product.Product;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class App {
     public static void main(String[] args) {
-        Product product1 = new Product("Хлеб", 50);
-        Product product2 = new Product("Молоко", 80);
-        Product product3 = new Product("Яйца", 120);
-        Product product4 = new Product("Сыр", 150);
-        Product product5 = new Product("Колбаса", 200);
 
         ProductBasket basket = new ProductBasket();
 
         // Добавление продуктов
-        basket.addProduct(product1);
-        basket.addProduct(product2);
-        basket.addProduct(product3);
-        basket.addProduct(product4);
-        basket.addProduct(product5);
+        for (int i = 0; i < 5; i++) {
+            basket.addProduct(basket.initProduct());
+        }
+
 
         // Попытка добавить шестой — должен вывести сообщение
         basket.addProduct(new Product("Шоколад", 70));
