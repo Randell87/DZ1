@@ -15,7 +15,6 @@ public class App {
             basket.addProduct(basket.initProduct());
         }
 
-
         // Попытка добавить шестой — должен вывести сообщение
         basket.addProduct(new Product("Шоколад", 70));
 

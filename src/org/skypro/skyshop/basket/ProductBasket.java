@@ -17,9 +17,6 @@ public class ProductBasket {
         return new Product(name, random.nextInt(10, 100));
     }
 
-
-
-
     //Добавление продукта в корзину
     public void addProduct(Product product){
         if(count >= maxProducts) {
