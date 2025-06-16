@@ -1,6 +1,7 @@
 package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.Random;
 
@@ -14,7 +15,7 @@ public class ProductBasket {
 
     public Product initProduct() {
             String name = NAMES[random.nextInt(NAMES.length)];
-        return new Product(name, random.nextInt(10, 100));
+        return new SimpleProduct(name, random.nextInt(10, 100));
     }
 
     //Добавление продукта в корзину
@@ -42,10 +43,18 @@ public class ProductBasket {
             System.out.println("В корзине пусто");
             return;
         }
+
         for (int i = 0; i < count; i++) {
-            System.out.println(products[i].getName() + ": " + products[i].getPrice());
+            System.out.println(products[i].toString());
         }
         System.out.println("Итого: " + getTotalPrice());
+
+        int countOfSpecialProducts = 0;
+        for (int i = 0; i < count; i++) {
+            if (products[i].isSpecial())
+               countOfSpecialProducts++;
+        }
+        System.out.println("Специальных товаров: " + countOfSpecialProducts);
     }
 
     public boolean containsProductByName(String name){

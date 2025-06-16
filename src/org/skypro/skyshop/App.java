@@ -1,7 +1,10 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.SimpleProduct;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -10,13 +13,17 @@ public class App {
 
         ProductBasket basket = new ProductBasket();
 
-        // Добавление продуктов
-        for (int i = 0; i < 5; i++) {
+        // Добавление 3 обычных продуктов
+        for (int i = 0; i < 3; i++) {
             basket.addProduct(basket.initProduct());
         }
 
+        //добавление 2 специальных продуктов
+        basket.addProduct(new DiscountedProduct("Водка", 100, 20));
+        basket.addProduct(new FixPriceProduct("Доширак"));
+
         // Попытка добавить шестой — должен вывести сообщение
-        basket.addProduct(new Product("Шоколад", 70));
+        basket.addProduct(new SimpleProduct("Шоколад", 70));
 
         // Вывод содержимого
         basket.printBasket();
