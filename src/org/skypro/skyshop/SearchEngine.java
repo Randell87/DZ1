@@ -16,4 +16,19 @@ public class SearchEngine {
             System.out.println("Поисковый массив заполнен.");
         }
     }
+
+    public Searchable[] search(String query) {
+        Searchable[] result = new Searchable[5];
+        int index = 0;
+
+        for (Searchable item : items) {
+            if (item == null) continue;
+            if (item.searchTerm().toLowerCase().contains(query.toLowerCase())) {
+                result[index++] = item;
+                if (index == result.length) break;
+            }
+        }
+
+        return result;
+    }
 }
