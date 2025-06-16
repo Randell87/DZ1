@@ -19,7 +19,6 @@ public final class Article implements Searchable {
         return text;
     }
 
-
     @Override
     public String toString() {
         return getName() + "\n" + getText();
