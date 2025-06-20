@@ -57,6 +57,15 @@ public class ProductBasket {
         System.out.println("Специальных товаров: " + countOfSpecialProducts);
     }
 
+    public Product[] getAllProducts() {
+        // Создаем новый массив только с реально добавленными товарами
+        Product[] result = new Product[count];
+        for (int i = 0; i < count; i++) {
+            result[i] = products[i];
+        }
+        return result;
+    }
+
     public boolean containsProductByName(String name){
         for (int i = 0; i < count; i++) {
             if (products[i].getName().equals(name)) {

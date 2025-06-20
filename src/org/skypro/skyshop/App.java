@@ -1,5 +1,6 @@
 package org.skypro.skyshop;
 
+import org.skypro.skyshop.article.Article;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
@@ -44,5 +45,39 @@ public class App {
         System.out.println("Общая стоимость: " + basket.getTotalPrice());
         System.out.println("Товар 'Хлеб' есть в корзине? " + basket.containsProductByName("Хлеб"));
 
+        Article article1 = new Article("Как выбрать книгу", "Лучшие советы по выбору книг.");
+        Article article2 = new Article("Уход за футболками", "Советы по уходу за одеждой.");
+        Article article3 = new Article("Война и Мир", "О том, как шла война 1812.");
+
+        // Создаем и наполняем SearchEngine
+        SearchEngine engine = new SearchEngine(10);
+
+        // Получаем все товары из корзины
+        Product[] allProducts = basket.getAllProducts();
+
+        // Добавляем их в SearchEngine
+        for (Product product : allProducts) {
+            engine.add(product);
+        }
+        engine.add(article1);
+        engine.add(article2);
+        engine.add(article3);
+
+        System.out.println("\n=== Поиск по запросу \"книга\" ===");
+        printResults(engine.search("книга"));
+
+        System.out.println("\n=== Поиск по запросу \"брелок\" ===");
+        printResults(engine.search("брелок"));
+
+        System.out.println("\n=== Поиск по запросу \"одежда\" ===");
+        printResults(engine.search("одежда"));
+    }
+
+    private static void printResults(Searchable[] results) {
+        for (Searchable item : results) {
+            if (item != null) {
+                System.out.println(item.getStringRepresentation());
+            }
+        }
     }
 }
