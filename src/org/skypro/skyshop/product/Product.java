@@ -1,12 +1,15 @@
 package org.skypro.skyshop.product;
 
-import org.skypro.skyshop.Searchable;
+import org.skypro.skyshop.search.Searchable;
 
 public abstract class Product implements Searchable {
     private String name;
     //private int price;
 
     public Product(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Название продукта не может быть null, пустым или состоять только из пробелов");
+        }
         this.name = name;
     }
 

@@ -6,6 +6,9 @@ import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.search.BestResultNotFound;
+import org.skypro.skyshop.search.SearchEngine;
+import org.skypro.skyshop.search.Searchable;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -71,6 +74,58 @@ public class App {
 
         System.out.println("\n=== Поиск по запросу \"одежда\" ===");
         printResults(engine.search("одежда"));
+
+        // проверка неправильных полей
+        System.out.println("=== Демонстрация проверок данных ===");
+
+        try {
+            // Неверное имя
+            new SimpleProduct("", 100);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        try {
+            // Цена не может быть меньше или равна нулю
+            new SimpleProduct("Обогащенный уран", 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        try {
+            // Базовая цена должна быть больше 0
+            new DiscountedProduct("Скидочный товар", 0, 50);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        try {
+            // Скидка вне диапазона 0-100
+            new DiscountedProduct("Скидочный товар", 1000, 101);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        try {
+            // Корректный объект — ошибок не будет
+            new DiscountedProduct("Корректный товар", 1000, 20);
+            System.out.println("Корректный товар успешно создан");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        try {
+            // Поиск с существующим результатом
+            System.out.println("=== Тестовый поиск: \"Война\" ===");
+            Searchable result = engine.findMostRelevant("Война");
+            System.out.println("Найден результат: " + result.getStringRepresentation());
+
+            // Поиск с НЕсуществующим результатом
+            System.out.println("\n=== Тестовый поиск: \"плутоний\" ===");
+            result = engine.findMostRelevant("плутоний");
+        } catch (BestResultNotFound e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
     }
 
     private static void printResults(Searchable[] results) {
@@ -80,4 +135,6 @@ public class App {
             }
         }
     }
+
+
 }
