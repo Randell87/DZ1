@@ -3,11 +3,17 @@ package org.skypro.skyshop.product;
 public class DiscountedProduct extends Product{
 
     private int basicPrice;
-    private int discont;
+    private final int discont;
 
     public DiscountedProduct(String name, int basicPrice, int discont) {
         super(name);
+        if( basicPrice <= 0 ){
+            throw new IllegalArgumentException("Цена должна быть строго больше 0");
+        }
         this.basicPrice = basicPrice;
+        if( discont < 0 || discont > 100){
+            throw new IllegalArgumentException("Скидка должна быть в диапазоне от 0 до 100 %");
+        }
         this.discont = discont;
     }
 
