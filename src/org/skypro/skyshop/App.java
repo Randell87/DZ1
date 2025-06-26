@@ -10,6 +10,8 @@ import org.skypro.skyshop.search.BestResultNotFound;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
+import java.util.List;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class App {
@@ -27,7 +29,7 @@ public class App {
         basket.addProduct(new FixPriceProduct("Доширак"));
 
         // Попытка добавить шестой — должен вывести сообщение
-        basket.addProduct(new SimpleProduct("Шоколад", 70));
+        //basket.addProduct(new SimpleProduct("Шоколад", 70));
 
         // Вывод содержимого
         basket.printBasket();
@@ -36,8 +38,36 @@ public class App {
         System.out.println("Общая стоимость: " + basket.getTotalPrice());
 
         // Поиск товаров
-        System.out.println("Товар 'Хлеб' есть в корзине? " + basket.containsProductByName("Хлеб"));
+        System.out.println("Товар 'Водка' есть в корзине? " + basket.containsProductByName("Водка"));
         System.out.println("Товар 'Апельсин' есть в корзине? " + basket.containsProductByName("Апельсин"));
+
+        //удаление товара с именем "Водка"
+        String existingName = "Водка";
+        List<Product> removed = basket.removeProductByName(existingName);
+
+        System.out.println("\n=== Удаленные товары ===");
+        if (removed.isEmpty()) {
+            System.out.println("Список удаленных товаров пуст");
+        } else {
+            for (Product p : removed) {
+                System.out.println(p.toString());
+            }
+        }
+
+        System.out.println("\n=== Содержимое корзины после удаления \"" + existingName + "\" ===");
+        basket.printBasket();
+
+        //Попытка удаления не существующего товара
+        String noExistingName = "Уран235";
+        List<Product> removedNoExist = basket.removeProductByName(noExistingName);
+
+        System.out.println("\n=== Результат удаления \"" + noExistingName + "\" ===");
+        if (removedNoExist.isEmpty()) {
+            System.out.println("Список пуст");
+        }
+
+        System.out.println("\n=== Содержимое корзины после попытки удаления \"" + noExistingName + "\" ===");
+        basket.printBasket();
 
         // Очистка корзины
         basket.clearBasket();
@@ -48,12 +78,12 @@ public class App {
         System.out.println("Общая стоимость: " + basket.getTotalPrice());
         System.out.println("Товар 'Хлеб' есть в корзине? " + basket.containsProductByName("Хлеб"));
 
-        Article article1 = new Article("Как выбрать книгу", "Лучшие советы по выбору книг.");
+        Article article1 = new Article("Книга", "Лучшие советы по выбору книг.");
         Article article2 = new Article("Уход за футболками", "Советы по уходу за одеждой.");
         Article article3 = new Article("Война и Мир", "О том, как шла война 1812.");
 
         // Создаем и наполняем SearchEngine
-        SearchEngine engine = new SearchEngine(10);
+        SearchEngine engine = new SearchEngine();
 
         // Получаем все товары из корзины
         Product[] allProducts = basket.getAllProducts();
@@ -62,18 +92,27 @@ public class App {
         for (Product product : allProducts) {
             engine.add(product);
         }
+
+        // так как корзина пустая добавляем вновь созданные продукты
+
+        System.out.println("Наполняем движок поиска... ");
+        engine.add(new SimpleProduct("Хлеб", 35));
+        engine.add(new SimpleProduct("Молоко", 70));
+        engine.add(new SimpleProduct("Молочный коктейль", 120));
+        engine.add(new SimpleProduct("Картофель", 25));
+        engine.add(new SimpleProduct("Молочный шоколад", 80));
         engine.add(article1);
         engine.add(article2);
         engine.add(article3);
 
-        System.out.println("\n=== Поиск по запросу \"книга\" ===");
-        printResults(engine.search("книга"));
-
-        System.out.println("\n=== Поиск по запросу \"брелок\" ===");
-        printResults(engine.search("брелок"));
-
-        System.out.println("\n=== Поиск по запросу \"одежда\" ===");
-        printResults(engine.search("одежда"));
+//        System.out.println("\n=== Поиск по запросу \"книга\" ===");
+//        printResults(engine.search("книга"));
+//
+//        System.out.println("\n=== Поиск по запросу \"брелок\" ===");
+//        printResults(engine.search("брелок"));
+//
+//        System.out.println("\n=== Поиск по запросу \"одежда\" ===");
+//        printResults(engine.search("одежда"));
 
         // проверка неправильных полей
         System.out.println("=== Демонстрация проверок данных ===");
@@ -125,6 +164,27 @@ public class App {
             result = engine.findMostRelevant("плутоний");
         } catch (BestResultNotFound e) {
             System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        // Выполняем поиск
+
+        String query = "мол";
+        List<Searchable> results = engine.search(query);
+
+        System.out.println("Результаты поиска по запросу \"" + query + "\":");
+        if (results.isEmpty()) {
+            System.out.println("Ничего не найдено.");
+        } else {
+            for (Searchable item : results) {
+                System.out.println("- " + item.searchTerm() + " (" + item.typeOfContent() + ")");
+            }
+        }
+
+        try {
+            Searchable bestMatch = engine.findMostRelevant("мол");
+            System.out.println("\nНаиболее релевантный результат: " + bestMatch.searchTerm());
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
         }
 
     }

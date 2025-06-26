@@ -3,12 +3,13 @@ package org.skypro.skyshop.basket;
 import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 
-import java.util.Random;
+import java.util.*;
 
 public class ProductBasket {
-    private static final int maxProducts = 5;
-    private final Product[] products = new Product[maxProducts];
-    private int count = 0; // счетчик продуктов в корзине
+    //private static final int maxProducts = 5;
+    //private final Product[] products = new Product[maxProducts];
+    LinkedList<Product> products = new LinkedList<>();
+    //private int count = 0; // счетчик продуктов в корзине
 
     private final Random random = new Random();
     private final String[] NAMES = {"Картофель", "Лук","Пиво","Свекла","Рыба"};
@@ -19,56 +20,65 @@ public class ProductBasket {
     }
 
     //Добавление продукта в корзину
-    public void addProduct(Product product){
-        if(count >= maxProducts) {
-            System.out.println("Невозможно добавить продукт");
-        } else {
-            products[count] = product;
-            count++;
+    public void addProduct(Product product){//
+            products.add(product);
+            //count++;
+    }
+
+    public List<Product> removeProductByName (String name) {
+        Iterator<Product> iterator = products.iterator(); //создаем итератор для корзины продуктов
+        List<Product> removedProducts = new LinkedList<>(); //создаем список удаленных продуктов
+        while (iterator.hasNext()) { //цикл по итератору, пока есть следующий
+            Product product = iterator.next(); // при помощи итератора достаем каждый продукт
+            if (product.getName().equals(name)) { //сравниваем имя этого продукта с запрашиваемым
+                removedProducts.add(product); //добавляем его в список удаленных продуктов
+                iterator.remove(); //удалям его из корзины
+            }
         }
+        return removedProducts; // возвращаем список удаленных продуктов
     }
     
     //Общая стоимость корзины
     public int getTotalPrice() {
         int total = 0;
-        for (int i = 0; i < count; i++) {
-            total +=products[i].getPrice();
+        for (Product product : products) {
+            total += product.getPrice();
         }
         return total;
     }
     
     //Вывод содержимого корзины
     public void printBasket(){
-        if (count == 0 ){
+        if (products.isEmpty()) {
             System.out.println("В корзине пусто");
             return;
         }
 
-        for (int i = 0; i < count; i++) {
-            System.out.println(products[i].toString());
+        for (Product product : products) {
+            System.out.println(product.toString());
         }
         System.out.println("Итого: " + getTotalPrice());
 
         int countOfSpecialProducts = 0;
-        for (int i = 0; i < count; i++) {
-            if (products[i].isSpecial())
-               countOfSpecialProducts++;
+        for (Product product : products) {
+            if (product.isSpecial())
+                countOfSpecialProducts++;
         }
         System.out.println("Специальных товаров: " + countOfSpecialProducts);
     }
 
     public Product[] getAllProducts() {
         // Создаем новый массив только с реально добавленными товарами
-        Product[] result = new Product[count];
-        for (int i = 0; i < count; i++) {
-            result[i] = products[i];
+        Product[] result = new Product[products.size()];
+        for (int i = 0; i < products.size(); i++) {
+            result[i] = products.get(i);
         }
         return result;
     }
 
     public boolean containsProductByName(String name){
-        for (int i = 0; i < count; i++) {
-            if (products[i].getName().equals(name)) {
+        for (Product product : products) {
+            if (product.getName().equals(name)) {
                 return true;
             }
         }
@@ -76,10 +86,7 @@ public class ProductBasket {
     }
 
     public void clearBasket(){
-        for (int i = 0; i < count; i++) {
-            products[i] = null;
-        }
-        count = 0;
+        products.clear();
     }
 
 
