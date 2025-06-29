@@ -1,31 +1,35 @@
 package org.skypro.skyshop.search;
 
-public class SearchEngine {
-    private final Searchable[] items;
-    private int count;
+import java.util.ArrayList;
+import java.util.List;
 
-    public SearchEngine(int capacity) {
-        this.items = new Searchable[capacity];
-        this.count = 0;
-    }
+public class SearchEngine {
+    private final List<Searchable> items = new ArrayList<>();
+    //private int count;
+
+//    public SearchEngine(int capacity) {
+//        this.items = new Searchable[capacity];
+//        this.count = 0;
+//    }
 
     public void add(Searchable item) {
-        if (count < items.length) {
-            items[count++] = item;
-        } else {
-            System.out.println("Поисковый массив заполнен.");
+        if (item == null) {
+            throw new IllegalArgumentException("Нельзя добавить null в поисковую систему");
         }
+        items.add(item);
     }
 
-    public Searchable[] search(String query) {
-        Searchable[] result = new Searchable[5];
-        int index = 0;
+    public List<Searchable> search(String query) {
+        List<Searchable> result = new ArrayList<>();
+        if (query == null || query.isBlank()) {
+            return result; // Возвращаем пустой список, если запрос пустой
+        }
+
+        String lowerCaseQuery = query.toLowerCase();
 
         for (Searchable item : items) {
-            if (item == null) continue;
-            if (item.searchTerm().toLowerCase().contains(query.toLowerCase())) {
-                result[index++] = item;
-                if (index == result.length) break;
+            if (item.searchTerm().toLowerCase().contains(lowerCaseQuery)) {
+                result.add(item);
             }
         }
 
@@ -51,7 +55,7 @@ public class SearchEngine {
         return count;
     }
 
-    public Searchable findMostRelevant(String search) throws BestResultNotFound{
+    public Searchable findMostRelevant(String search) throws BestResultNotFound {
         if (search == null || search.isBlank()) {
             throw new IllegalArgumentException("Поисковая строка не может быть пустой или null");
         }
@@ -59,15 +63,12 @@ public class SearchEngine {
         Searchable mostRelevant = null;
         int maxCount = 0;
 
-        for (int i = 0; i < items.length; i++) {
-            if(items[i] == null) continue;
+        for (Searchable item : items) {
+            int count = countSubstringOccurrences(item.searchTerm().toLowerCase(), search.toLowerCase());
 
-            String searchTerm = items[i].searchTerm();
-            int count = countSubstringOccurrences(searchTerm, search);
-
-            if(count > maxCount) {
+            if (count > maxCount) {
                 maxCount = count;
-                mostRelevant = items[i];
+                mostRelevant = item;
             }
         }
 
