@@ -8,7 +8,7 @@ import java.util.*;
 public class ProductBasket {
     //private static final int maxProducts = 5;
     //private final Product[] products = new Product[maxProducts];
-    LinkedList<Product> products = new LinkedList<>();
+    List<Product> products = new LinkedList<>();
     //private int count = 0; // счетчик продуктов в корзине
 
     private final Random random = new Random();
