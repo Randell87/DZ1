@@ -11,9 +11,8 @@ import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
 import java.util.List;
+import java.util.Map;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class App {
     public static void main(String[] args) {
 
@@ -27,9 +26,6 @@ public class App {
         //добавление 2 специальных продуктов
         basket.addProduct(new DiscountedProduct("Водка", 100, 20));
         basket.addProduct(new FixPriceProduct("Доширак"));
-
-        // Попытка добавить шестой — должен вывести сообщение
-        //basket.addProduct(new SimpleProduct("Шоколад", 70));
 
         // Вывод содержимого
         basket.printBasket();
@@ -105,15 +101,6 @@ public class App {
         engine.add(article2);
         engine.add(article3);
 
-//        System.out.println("\n=== Поиск по запросу \"книга\" ===");
-//        printResults(engine.search("книга"));
-//
-//        System.out.println("\n=== Поиск по запросу \"брелок\" ===");
-//        printResults(engine.search("брелок"));
-//
-//        System.out.println("\n=== Поиск по запросу \"одежда\" ===");
-//        printResults(engine.search("одежда"));
-
         // проверка неправильных полей
         System.out.println("=== Демонстрация проверок данных ===");
 
@@ -169,14 +156,15 @@ public class App {
         // Выполняем поиск
 
         String query = "мол";
-        List<Searchable> results = engine.search(query);
+        Map<String, Searchable> results = engine.search(query);
 
         System.out.println("Результаты поиска по запросу \"" + query + "\":");
         if (results.isEmpty()) {
             System.out.println("Ничего не найдено.");
         } else {
-            for (Searchable item : results) {
-                System.out.println("- " + item.searchTerm() + " (" + item.typeOfContent() + ")");
+            for (Map.Entry<String, Searchable> entry : results.entrySet()) {
+                Searchable item = entry.getValue();
+                System.out.println("- " + entry.getKey() + " (" + item.typeOfContent() + ")");
             }
         }
 
