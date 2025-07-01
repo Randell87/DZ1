@@ -1,12 +1,9 @@
 package org.skypro.skyshop.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class SearchEngine {
-    private final List<Searchable> items = new ArrayList<>();
+    private final Set<Searchable> items = new HashSet<>();
 
     public void add(Searchable item) {
         if (item == null) {
@@ -15,21 +12,33 @@ public class SearchEngine {
         items.add(item);
     }
 
-    public Map<String, Searchable> search(String query) {
-        Map<String, Searchable> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    public Set<Searchable> search(String query) {
+        // TreeSet автоматически упорядочивает элементы через компаратор
+        Set<Searchable> result = new TreeSet<>(getSearchableComparator());
+
         if (query == null || query.isBlank()) {
-            return result; // Возвращаем пустой список, если запрос пустой
+            return result;
         }
 
         String lowerCaseQuery = query.toLowerCase();
 
         for (Searchable item : items) {
             if (item.searchTerm().toLowerCase().contains(lowerCaseQuery)) {
-                result.put(item.getName(), item);
+                result.add(item);
             }
         }
 
         return result;
+    }
+
+    private Comparator<Searchable> getSearchableComparator() {
+        return (o1, o2) -> {
+            int lengthCompare = Integer.compare(o2.getName().length(), o1.getName().length());
+            if (lengthCompare != 0) {
+                return lengthCompare; // сортировка по длине (от длинного к короткому)
+            }
+            return o1.getName().compareToIgnoreCase(o2.getName()); // при равной длине — по алфавиту
+        };
     }
 
     private int countSubstringOccurrences(String text, String substring) {
