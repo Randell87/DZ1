@@ -12,6 +12,7 @@ import org.skypro.skyshop.search.Searchable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
@@ -77,6 +78,7 @@ public class App {
         Article article1 = new Article("Книга", "Лучшие советы по выбору книг.");
         Article article2 = new Article("Уход за футболками", "Советы по уходу за одеждой.");
         Article article3 = new Article("Война и Мир", "О том, как шла война 1812.");
+        Article article4 = new Article("Война и Мир", "О том, как шла война 1812.");
 
         // Создаем и наполняем SearchEngine
         SearchEngine engine = new SearchEngine();
@@ -100,6 +102,7 @@ public class App {
         engine.add(article1);
         engine.add(article2);
         engine.add(article3);
+        engine.add(article4); //Добавляем вторую войну и мир для проверки
 
         // проверка неправильных полей
         System.out.println("=== Демонстрация проверок данных ===");
@@ -144,6 +147,7 @@ public class App {
             // Поиск с существующим результатом
             System.out.println("=== Тестовый поиск: \"Война\" ===");
             Searchable result = engine.findMostRelevant("Война");
+            // если найдется одна война, то всё норм
             System.out.println("Найден результат: " + result.getStringRepresentation());
 
             // Поиск с НЕсуществующим результатом
@@ -156,15 +160,14 @@ public class App {
         // Выполняем поиск
 
         String query = "мол";
-        Map<String, Searchable> results = engine.search(query);
+        Set<Searchable> results = engine.search(query);
 
         System.out.println("Результаты поиска по запросу \"" + query + "\":");
         if (results.isEmpty()) {
             System.out.println("Ничего не найдено.");
         } else {
-            for (Map.Entry<String, Searchable> entry : results.entrySet()) {
-                Searchable item = entry.getValue();
-                System.out.println("- " + entry.getKey() + " (" + item.typeOfContent() + ")");
+            for (Searchable item : results) {
+                System.out.println("- " + item.getName() + " (" + item.typeOfContent() + ")");
             }
         }
 
