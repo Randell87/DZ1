@@ -2,15 +2,11 @@ package org.skypro.skyshop.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SearchEngine {
     private final List<Searchable> items = new ArrayList<>();
-    //private int count;
-
-//    public SearchEngine(int capacity) {
-//        this.items = new Searchable[capacity];
-//        this.count = 0;
-//    }
 
     public void add(Searchable item) {
         if (item == null) {
@@ -19,8 +15,8 @@ public class SearchEngine {
         items.add(item);
     }
 
-    public List<Searchable> search(String query) {
-        List<Searchable> result = new ArrayList<>();
+    public Map<String, Searchable> search(String query) {
+        Map<String, Searchable> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         if (query == null || query.isBlank()) {
             return result; // Возвращаем пустой список, если запрос пустой
         }
@@ -29,7 +25,7 @@ public class SearchEngine {
 
         for (Searchable item : items) {
             if (item.searchTerm().toLowerCase().contains(lowerCaseQuery)) {
-                result.add(item);
+                result.put(item.getName(), item);
             }
         }
 
