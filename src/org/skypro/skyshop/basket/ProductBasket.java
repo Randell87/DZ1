@@ -26,6 +26,7 @@ public class ProductBasket {
     /**
      * Добавляет продукт в корзину. Имя нормализуется в нижний регистр для согласованности.
      */
+
     public void addProduct(Product product) {
         String key = product.getName().toLowerCase();
         products.computeIfAbsent(key, k -> new ArrayList<>()).add(product);
