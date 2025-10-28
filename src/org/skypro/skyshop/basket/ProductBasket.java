@@ -4,6 +4,7 @@ import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductBasket {
 
@@ -14,76 +15,101 @@ public class ProductBasket {
     private static final int MIN_PRICE = 10;
     private static final int MAX_PRICE = 100;
 
+    /**
+     * Генерирует случайный продукт для тестирования.
+     */
     public Product initProduct() {
         String name = NAMES[random.nextInt(NAMES.length)];
         return new SimpleProduct(name, random.nextInt(MIN_PRICE, MAX_PRICE + 1));
     }
 
-    //Добавление продукта в корзину
-    public void addProduct(Product product){//
-        products.computeIfAbsent(product.getName(), k -> new ArrayList<>()).add(product);
+    /**
+     * Добавляет продукт в корзину. Имя нормализуется в нижний регистр для согласованности.
+     */
 
+    public void addProduct(Product product) {
+        String key = product.getName().toLowerCase();
+        products.computeIfAbsent(key, k -> new ArrayList<>()).add(product);
     }
 
-    // Удаление продуктов по имени
+    /**
+     * Удаляет все продукты по имени (регистронезависимо).
+     */
     public List<Product> removeProductByName(String name) {
         List<Product> removed = products.remove(name.toLowerCase());
         return removed == null ? Collections.emptyList() : removed;
     }
 
-    // Общая стоимость корзины
+    /**
+     * Возвращает общую стоимость всех товаров в корзине.
+     */
     public int getTotalPrice() {
-        int total = 0;
-        for (List<Product> productList : products.values()) {
-            for (Product product : productList) {
-                total += product.getPrice();
-            }
-        }
-        return total;
+        return products.values().stream()
+                .flatMap(List::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
-    // Вывод содержимого корзины
+    /**
+     * Выводит содержимое корзины: список товаров, итоговую сумму и количество специальных товаров.
+     */
     public void printBasket() {
-        if (products.isEmpty()) {
+        List<Product> allProducts = getAllProductsAsList();
+
+        if (allProducts.isEmpty()) {
             System.out.println("В корзине пусто");
             return;
         }
 
-        int total = 0;
-        int specialCount = 0;
+        allProducts.forEach(System.out::println);
 
-        for (List<Product> productList : products.values()) {
-            for (Product product : productList) {
-                System.out.println(product.toString());
-                total += product.getPrice();
-                if (product.isSpecial()) {
-                    specialCount++;
-                }
-            }
-        }
+        int total = allProducts.stream()
+                .mapToInt(Product::getPrice)
+                .sum();
+
+        long specialCount = getSpecialCount();
 
         System.out.println("Итого: " + total);
         System.out.println("Специальных товаров: " + specialCount);
     }
 
-    // Получить все товары в виде массива
-    public Product[] getAllProducts() {
-        List<Product> all = new ArrayList<>();
-        for (List<Product> productList : products.values()) {
-            all.addAll(productList);
-        }
-        return all.toArray(new Product[0]);
+    /**
+     * Возвращает количество специальных товаров.
+     */
+    private long getSpecialCount() {
+        return products.values().stream()
+                .flatMap(List::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 
-    // Проверка наличия товара по имени
+    /**
+     * Возвращает все товары в виде массива.
+     */
+    public Product[] getAllProducts() {
+        return getAllProductsAsList().toArray(new Product[0]);
+    }
+
+    /**
+     * Проверяет, есть ли товар с указанным именем в корзине.
+     */
     public boolean containsProductByName(String name) {
         return products.containsKey(name.toLowerCase());
     }
 
-    // Очистить корзину
+    /**
+     * Очищает корзину.
+     */
     public void clearBasket() {
         products.clear();
     }
 
-
+    /**
+     * Возвращает все продукты в виде списка.
+     */
+    private List<Product> getAllProductsAsList() {
+        return products.values().stream()
+                .flatMap(List::stream)
+                .toList(); // immutable list (Java 16+), или .collect(Collectors.toList()) для Java 8–15
+    }
 }
